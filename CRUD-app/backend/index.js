@@ -1,8 +1,10 @@
 const express = require('express');
 const todos = require('./db/config')
 const app = express();
+const cors = require('cors')
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/fetch-data', async (req, res) => {
   const result = await todos.find();
@@ -44,6 +46,6 @@ app.delete('/delete-data/:id', async (req, res) => {
   }
 })
 
-app.listen(3000, () => {
+app.listen(4000, () => {
   console.log("server started");
 })
