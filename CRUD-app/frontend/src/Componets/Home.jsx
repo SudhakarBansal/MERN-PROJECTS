@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [todos, settodos] = useState([]);
   const [title, settitle] = useState("");
   const [subTitle, setsubTitle] = useState("");
   const [isEdit, setisEdit] = useState(false)
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getProducts();
@@ -43,8 +46,10 @@ const Home = () => {
     });
 
     setisEdit((prev) => !prev);
-    
+  }
 
+  const handleAddClick=()=>{
+    navigate('/addEntry');
   }
 
   return (
@@ -58,7 +63,7 @@ const Home = () => {
             todos.length > 0 && todos ? (
 
               todos.map((todo, index) => (
-                <div className="card mx-3" style={{ width: "18rem" }}>
+                <div className="card mx-3" style={{ width: "18rem" }} key={index}>
                   {!isEdit ? (<div className="card-body" key={index}>
                     <h5 className="card-title">{todo.title}</h5>
                     <p className="card-text">{todo.subTitle}</p>
@@ -67,13 +72,13 @@ const Home = () => {
                   </div>) :
                     (
                       <form className='p-3'>
-                        <div class="form-group">
-                          <label for="titleId" className='f'>Title</label>
+                        <div className="form-group">
+                          <label htmlFor="titleId" className='f'>Title</label>
                           <input type='text' className="form-control mt-1" id='titleId' value={title} onChange={(e) => settitle(e.target.value)} />
                         </div>
-                        <div class="form-group mt-3">
-                          <label for="exampleFormControlTextarea1">description</label>
-                          <textarea class="form-control mt-1" id="exampleFormControlTextarea1" rows="3" value={subTitle} onChange={(e) => setsubTitle(e.target.value)} ></textarea>
+                        <div className="form-group mt-3">
+                          <label htmlFor="exampleFormControlTextarea1">description</label>
+                          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" value={subTitle} onChange={(e) => setsubTitle(e.target.value)} ></textarea>
                         </div>
                         <button className="btn btn-primary mt-3" onClick={() => handleEdit(todo._id)}>Done</button>
                       </form>
@@ -84,6 +89,8 @@ const Home = () => {
             ) : <p>loading..</p>
           }
         </div>
+
+        <button className='btn btn-primary' onClick={handleAddClick}>Add Items</button>
       </div>
     </>
   );
