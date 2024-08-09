@@ -5,7 +5,7 @@ const Home = () => {
   const [todos, settodos] = useState([]);
   const [title, settitle] = useState("");
   const [subTitle, setsubTitle] = useState("");
-  const [isEdit, setisEdit] = useState(false)
+  const [editId, setEditId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -23,8 +23,8 @@ const Home = () => {
   const handleClick = (todo) => {
     settitle(todo.title);
     setsubTitle(todo.subTitle);
-    setisEdit((prev) => !prev)
-  }
+    setEditId(todo._id); // Set the ID of the item being edited
+  };
 
   const handleDelete = async (id) => {
     let result = await fetch(`http://localhost:4000/delete-data/${id}`, {
@@ -35,7 +35,8 @@ const Home = () => {
     if (result) {
       getProducts();
     }
-  }
+  };
+
   const handleEdit = async (id) => {
     await fetch(`http://localhost:4000/update-data/${id}`, {
       method: "PUT",
@@ -45,12 +46,13 @@ const Home = () => {
       }
     });
 
-    setisEdit((prev) => !prev);
-  }
+    setEditId(null); // Reset the edit ID after editing
+    getProducts(); // Refresh the list after editing
+  };
 
-  const handleAddClick=()=>{
+  const handleAddClick = () => {
     navigate('/addEntry');
-  }
+  };
 
   return (
     <>
@@ -58,32 +60,31 @@ const Home = () => {
         <h1 className="m-4">
           Posts :
         </h1>
-        <div className="container d-flex flex-wrap">
+        <div className="container d-flex flex-wrap align-items-center justify-content-center">
           {
-            todos.length > 0 && todos ? (
-
-              todos.map((todo, index) => (
-                <div className="card mx-3" style={{ width: "18rem" }} key={index}>
-                  {!isEdit ? (<div className="card-body" key={index}>
-                    <h5 className="card-title">{todo.title}</h5>
-                    <p className="card-text">{todo.subTitle}</p>
-                    <button className="btn btn-info m-1" onClick={() => handleClick(todo)}>Edit</button>
-                    <button className="btn btn-danger m-1" onClick={() => handleDelete(todo._id)}>Delete</button>
-                  </div>) :
-                    (
-                      <form className='p-3'>
-                        <div className="form-group">
-                          <label htmlFor="titleId" className='f'>Title</label>
-                          <input type='text' className="form-control mt-1" id='titleId' value={title} onChange={(e) => settitle(e.target.value)} />
-                        </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="exampleFormControlTextarea1">description</label>
-                          <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" value={subTitle} onChange={(e) => setsubTitle(e.target.value)} ></textarea>
-                        </div>
-                        <button className="btn btn-primary mt-3" onClick={() => handleEdit(todo._id)}>Done</button>
-                      </form>
-                    )
-                  }
+            todos.length > 0 ? (
+              todos.map((todo) => (
+                <div className="card m-3" style={{ width: "18rem" }} key={todo._id}>
+                  {editId === todo._id ? (
+                    <form className='p-3'>
+                      <div className="form-group">
+                        <label htmlFor="titleId" className='f'>Title</label>
+                        <input type='text' className="form-control mt-1" id='titleId' value={title} onChange={(e) => settitle(e.target.value)} />
+                      </div>
+                      <div className="form-group mt-3">
+                        <label htmlFor="exampleFormControlTextarea1">description</label>
+                        <textarea className="form-control mt-1" id="exampleFormControlTextarea1" rows="3" value={subTitle} onChange={(e) => setsubTitle(e.target.value)} ></textarea>
+                      </div>
+                      <button className="btn btn-primary mt-3" type="button" onClick={() => handleEdit(todo._id)}>Done</button>
+                    </form>
+                  ) : (
+                    <div className="card-body">
+                      <h5 className="card-title">{todo.title}</h5>
+                      <p className="card-text">{todo.subTitle}</p>
+                      <button className="btn btn-info m-1" onClick={() => handleClick(todo)}>Edit</button>
+                      <button className="btn btn-danger m-1" onClick={() => handleDelete(todo._id)}>Delete</button>
+                    </div>
+                  )}
                 </div>
               ))
             ) : <p>loading..</p>
@@ -96,5 +97,4 @@ const Home = () => {
   );
 }
 
-export default Home
-
+export default Home;
