@@ -41,6 +41,20 @@ app.delete('/delete-data/:id', async (req, res) => {
   }
 })
 
+app.get('/search/:key',async(req,res)=>{
+  let result = await books.find(
+    {
+      $or:[
+        {title : {$regex : req.params.key}},
+        {subTitle : {$regex : req.params.key}},
+        {author : {$regex : req.params.key}},
+        {price : {$regex : req.params.key}}
+      ]
+    }
+  )
+  res.send(result);
+})
+
 app.listen(5000,()=>{
   console.log("server stated");
 })
