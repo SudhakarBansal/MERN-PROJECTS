@@ -27,8 +27,9 @@ const Home = () => {
   }
   return (
     <>
-      {students && students.length > 0 ? (
         <div className="container">
+      {students && students.length > 0 ? (
+        <div>
           <h1 className='my-5'>Students</h1>
           <table className="table">
             <thead>
@@ -45,17 +46,18 @@ const Home = () => {
                   <td>{student.roll_no}</td>
                   <td>{student.st_name}</td>
                   <td>{student.st_class}</td>
-                  <td><button className='btn btn-primary mx-1' onClick={()=>navigate('/entry')}>Edit</button>
+                  <td><button className='btn btn-primary mx-1' onClick={() => navigate('/entry')}>Edit</button>
                     <button className='btn btn-danger mx-1' onClick={() => handleDelete(student._id)}>Delete</button></td>
                 </tr>
               ))}
 
             </tbody>
           </table>
-          <button className='btn btn-dark' onClick={()=>navigate('/entry')}>Add Students</button>
-        </div>
+          </div>
       ) : <p>loading...</p>
-      }
+    }
+      <button className='btn btn-dark' onClick={() => navigate('/entry')}>Add Students</button>
+    </div>
     </>
   )
 }
